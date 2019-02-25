@@ -1,0 +1,70 @@
+#include <iostream>
+#include "Estudiant.hh"
+
+#include <vector>
+
+using namespace std;
+
+void simplificar_vector(vector<Estudiant>& v, int& pos){
+
+	int k = v.size();
+	
+
+	double maxnota = -1;
+
+	
+	if (v.size() > 1) {
+
+	vector<Estudiant> s;
+
+
+	for (int i = 1; i < k; i++){
+
+
+		if (v[i-1].consultar_DNI() != v[i].consultar_DNI()){
+
+			if (i == k-1){
+				Estudiant a(v[i-1].consultar_DNI());
+				if (maxnota >=0 and maxnota <= 10) a.afegir_nota(maxnota);
+				s.push_back(a);
+
+				Estudiant b(v[i].consultar_DNI());
+				if(v[i].te_nota()) b.afegir_nota(v[i].consultar_nota());
+				s.push_back(b);
+			}
+			else{
+				Estudiant a(v[i-1].consultar_DNI());
+				if (maxnota >=0 and maxnota <= 10) a.afegir_nota(maxnota);
+				if (i-1 == 0 and v[i-1].te_nota()) a.afegir_nota(v[i-1].consultar_nota());
+				s.push_back(a);
+
+				if(v[i].te_nota()) maxnota = v[i].consultar_nota();
+				if(not v[i].te_nota()) maxnota = -1;
+			}
+		}
+		else{
+			if (i == k-1){
+				if(v[i].te_nota()){
+					if(v[i].consultar_nota() > maxnota) maxnota = v[i].consultar_nota();
+				}
+				Estudiant a(v[i].consultar_DNI());
+				if (maxnota >= 0 and maxnota <= 10) a.afegir_nota(maxnota);
+				s.push_back(a);
+			}
+			else{
+				if (v[i].te_nota()){
+					if(v[i].consultar_nota() > maxnota) maxnota = v[i].consultar_nota();
+					}
+				
+					
+				
+				}
+			}	
+		}
+
+		v = s;
+	}
+	
+	pos = v.size()-1;
+
+}
