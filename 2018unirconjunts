@@ -1,0 +1,73 @@
+// Poseu aqui vostre nom, cognoms i grup de laboratori
+
+
+
+#include "Cjt_estudiants.hh"
+
+// Traieu els comentaris // abans de posar codi a les funcions
+
+void Cjt_estudiants::unir_conjunts(const Cjt_estudiants & c){
+//Pre: tots els dni de c hi són al p.i. */
+/* Post: cada Estudiant del paràmetre implicit conté la millor nota entre 
+   l'original i la que pugui tenir a c */ 
+
+    bool b = false;
+    int k = 0;
+    for (int i = 0; i < nest; ++i) {
+
+        if (c.vest[k].consultar_DNI() == vest[i].consultar_DNI()) {
+            if (c.vest[k].te_nota() and not vest[i].te_nota()) {
+                vest[i].afegir_nota(c.vest[k].consultar_nota());
+                if (not b) b = true;
+            }
+            else if (c.vest[k].te_nota() and vest[i].te_nota()) {
+                if (c.vest[k].consultar_nota() > vest[i].consultar_nota()) {
+                    vest[i].modificar_nota(c.vest[k].consultar_nota());
+                    if (not b) b = true;
+                }
+
+            }
+            ++k;
+        }
+
+    }
+
+   if (b) recalcular_posicio_imax();
+
+}
+
+
+void Cjt_estudiants::actualitzar_conjunt() {
+/* Pre: a l'entrada estàndar hi ha una seqüència d'Estudiant (seguida d'un
+   Estudiant amb dni 0 que no forma part de la seqüència), amb els dni
+   ordenats creixentment i tots hi són al p.i. */
+/* Post: cada Estudiant del paràmetre implicit conté la millor nota entre l'original
+   i la que pugui tenir a la seqüència */ 
+
+    bool b = false;
+    Estudiant a;
+    a.llegir();
+    int i = 0;
+    while (a.consultar_DNI() != 0) {
+
+        if (a.consultar_DNI() == vest[i].consultar_DNI()) {
+            if (a.te_nota() and not vest[i].te_nota()) {
+                vest[i].afegir_nota(a.consultar_nota());
+                if (not b) b = true;
+            }
+            else if (a.te_nota() and vest[i].te_nota()) {
+                if (a.consultar_nota() > vest[i].consultar_nota()) {
+                    vest[i].modificar_nota(a.consultar_nota());
+                    if (not b) b = true;
+                }
+
+            }
+            a.llegir();
+        }
+        ++i;
+
+
+    }
+
+    if (b) recalcular_posicio_imax();
+}
