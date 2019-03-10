@@ -1,0 +1,77 @@
+#include "Cjt_estudiants.hh"
+
+void Cjt_estudiants::recalcular_pos_min_admes() {
+   // codi de la implementaciŕ¸Łŕ¸
+	if (n_admes == 0) i_min_admes = -1;
+	else if (n_admes > 0) {
+
+		bool first = true;
+
+		for (int i = 0; i < nest-1; i++) {
+			if (vest[i].admes_reaval()) {
+				if (first) {
+					first = false;
+					i_min_admes = i;
+				}
+				else {
+					if (Estudiant::major_nota_dni(vest[i_min_admes],vest[i])) i_min_admes = i;
+				}
+			}
+		}
+	}
+
+	
+}
+
+void Cjt_estudiants::afegir_estudiant(const Estudiant& est, bool& trobat) {
+   // codi de la implementacio
+	
+	trobat = false;
+	int p = cerca_dicot(vest, 0, nest-1, est.consultar_DNI());
+	if (vest[p].consultar_DNI() == est.consultar_DNI()) trobat = true;
+
+	if (not trobat) {
+
+		nest++;
+
+		for (int i = nest-1; i > p; --i) {
+			if (i-1 == i_min_admes) i_min_admes++;
+			vest[i] = vest[i-1];
+		}
+
+		vest[p] = est;
+		
+
+		if (est.cond_reaval()) {
+			if (places_disp() > n_admesos()) {
+				
+				
+				vest[p].modificar_reaval(true);
+				n_admes++;
+
+				if (i_min_admes == -1) i_min_admes = p;
+				else if (Estudiant::major_nota_dni(vest[i_min_admes],vest[p])) recalcular_pos_min_admes();
+				
+			}
+			else {
+
+				if (vest[p].consultar_nota() > vest[i_min_admes].consultar_nota()) {
+					
+					vest[p].modificar_reaval(true);
+					vest[i_min_admes].modificar_reaval(false);
+
+					recalcular_pos_min_admes();
+				}
+				else if (vest[p].consultar_nota() == vest[i_min_admes].consultar_nota() and 
+						vest[p].consultar_DNI() > vest[i_min_admes].consultar_DNI()) {
+
+					vest[p].modificar_reaval(true);
+					vest[i_min_admes].modificar_reaval(false);
+
+					i_min_admes = p;
+				}
+
+			}
+		}
+	}
+}
